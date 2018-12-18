@@ -1,4 +1,4 @@
-package com.uguke.code.reflect;
+package com.uguke.reflect;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -6,7 +6,7 @@ import android.os.Build;
 /**
  * 功能描述：类型异常
  * @author LeiJue
- * @time 2017/10/18
+ * @date 2018/12/18
  */
 public class TypeException extends RuntimeException {
 

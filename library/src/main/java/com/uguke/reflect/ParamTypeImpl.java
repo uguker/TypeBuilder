@@ -1,4 +1,4 @@
-package com.uguke.code.reflect;
+package com.uguke.reflect;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -8,61 +8,63 @@ import java.util.Arrays;
 /**
  * 功能描述：参数化的类型
  * @author LeiJue
- * @time 2017/10/18
+ * @date 2018/12/18
  */
 public class ParamTypeImpl implements ParameterizedType {
 
-    private Type [] args;
-    private Type owner;
-    private Class raw;
+    private Type [] mArgs;
+    private Type mOwner;
+    private Class mRaw;
 
     public ParamTypeImpl(Class raw, Type[] args, Type owner) {
 
-        this.raw = raw;
-        this.args = args != null ? args : new Type[0];
-        this.owner = owner;
+        this.mRaw = raw;
+        this.mArgs = args != null ? args : new Type[0];
+        this.mOwner = owner;
 
         checkArgs();
     }
 
     private void checkArgs() {
 
-        if (raw == null) {
+        if (mRaw == null) {
             throw new TypeException("raw class can't be null");
         }
 
-        TypeVariable[] typeParameters = raw.getTypeParameters();
-        if (args.length != 0 && typeParameters.length != args.length) {
-            throw new TypeException(raw.getName() + " expect " + typeParameters.length + " arg(s), got " + args.length);
+        TypeVariable[] typeParameters = mRaw.getTypeParameters();
+        if (mArgs.length != 0 && typeParameters.length != mArgs.length) {
+            throw new TypeException(mRaw.getName() +
+                    " expect " + typeParameters.length +
+                    " arg(s), got " + mArgs.length);
         }
     }
 
     @Override
     public Type[] getActualTypeArguments() {
-        return args;
+        return mArgs;
     }
 
     @Override
     public Type getRawType() {
-        return raw;
+        return mRaw;
     }
 
     @Override
     public Type getOwnerType() {
-        return owner;
+        return mOwner;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(raw.getName());
-        if (args.length != 0) {
+        sb.append(mRaw.getName());
+        if (mArgs.length != 0) {
             sb.append('<');
-            for (int i = 0; i < args.length; i++) {
+            for (int i = 0; i < mArgs.length; i++) {
                 if (i != 0) {
                     sb.append(", ");
                 }
-                Type type = args[i];
+                Type type = mArgs[i];
                 if (type instanceof Class) {
                     Class clazz = (Class) type;
 
@@ -82,7 +84,7 @@ public class ParamTypeImpl implements ParameterizedType {
                         sb.append(clazz.getName());
                     }
                 } else {
-                    sb.append(args[i].toString());
+                    sb.append(mArgs[i].toString());
                 }
             }
             sb.append('>');
@@ -93,29 +95,26 @@ public class ParamTypeImpl implements ParameterizedType {
     @Override
     public boolean equals(Object o) {
 
-        if (this == o)
+        if (this == o) {
             return true;
+        }
 
-        if (o == null || getClass() != o.getClass())
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
 
         ParamTypeImpl that = (ParamTypeImpl) o;
 
-        if (!raw.equals(that.raw))
-            return false;
-        if (!Arrays.equals(args, that.args))
-            return false;
-
-        return owner != null ? owner.equals(that.owner) :
-                that.owner == null;
+        return mRaw.equals(that.mRaw) && Arrays.equals(mArgs, that.mArgs) &&
+                (mOwner != null ? mOwner.equals(that.mOwner) : that.mOwner == null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = raw.hashCode();
-        result = 31 * result + Arrays.hashCode(args);
-        result = 31 * result + (owner != null ? owner.hashCode() : 0);
+        int result = mRaw.hashCode();
+        result = 31 * result + Arrays.hashCode(mArgs);
+        result = 31 * result + (mOwner != null ? mOwner.hashCode() : 0);
         return result;
     }
 

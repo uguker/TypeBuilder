@@ -1,4 +1,4 @@
-package com.uguke.code.reflect;
+package com.uguke.reflect;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
@@ -7,28 +7,28 @@ import java.util.Arrays;
 /**
  * 功能描述：泛型通配符
  * @author LeiJue
- * @time 2017/10/18
+ * @date 2018/12/18
  */
 public class WildTypeImpl implements WildcardType {
 
-    private Class[] upper;
-    private Class[] lower;
+    private Class[] mUpper;
+    private Class[] mLower;
 
     public WildTypeImpl(Class[] lower, Class[] upper) {
 
-        this.lower = lower != null ? lower : new Class[0];
-        this.upper = upper != null ? upper : new Class[0];
+        this.mLower = lower != null ? lower : new Class[0];
+        this.mUpper = upper != null ? upper : new Class[0];
 
         checkArgs();
     }
 
     private void checkArgs() {
-        if (lower.length == 0 && upper.length == 0) {
+        if (mLower.length == 0 && mUpper.length == 0) {
             throw new IllegalArgumentException("lower or upper can't be null");
         }
 
-        checkArgs(lower);
-        checkArgs(upper);
+        checkArgs(mLower);
+        checkArgs(mUpper);
     }
 
     private void checkArgs(Class[] args) {
@@ -57,46 +57,48 @@ public class WildTypeImpl implements WildcardType {
 
     @Override
     public Type[] getUpperBounds() {
-        return upper;
+        return mUpper;
     }
 
     @Override
     public Type[] getLowerBounds() {
-        return lower;
+        return mLower;
     }
 
     @Override
     public String toString() {
-        if (upper.length > 0) {
-            if (upper[0] == Object.class) {
+        if (mUpper.length > 0) {
+            if (mUpper[0] == Object.class) {
                 return "?";
             }
-            return getTypeString("? extends ", upper);
+            return getTypeString("? extends ", mUpper);
         } else {
-            return getTypeString("? super ", lower);
+            return getTypeString("? super ", mLower);
         }
     }
 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
+        }
 
-        if (o == null || getClass() != o.getClass())
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
 
         WildTypeImpl that = (WildTypeImpl) o;
 
-        return Arrays.equals(upper, that.upper) &&
-                Arrays.equals(lower, that.lower);
+        return Arrays.equals(mUpper, that.mUpper) &&
+                Arrays.equals(mLower, that.mLower);
 
     }
 
     @Override
     public int hashCode() {
-        int result = Arrays.hashCode(upper);
-        result = 31 * result + Arrays.hashCode(lower);
+        int result = Arrays.hashCode(mUpper);
+        result = 31 * result + Arrays.hashCode(mLower);
         return result;
     }
 

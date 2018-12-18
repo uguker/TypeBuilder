@@ -1,4 +1,4 @@
-package com.uguke.code.reflect;
+package com.uguke.reflect;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -7,12 +7,12 @@ import java.util.List;
 /**
  * 功能描述：泛型类构造器
  * @author LeiJue
- * @time 2017/08/05
+ * @date 2018/12/18
  */
 public class TypeBuilder {
 
     /** 要生成的类 **/
-    private Class raw;
+    private Class mRaw;
     /** 父级泛型类 **/
     private TypeBuilder parent;
     /** 泛型列表 **/
@@ -20,14 +20,13 @@ public class TypeBuilder {
 
     private TypeBuilder(Class raw, TypeBuilder parent) {
         assert raw != null;
-        this.raw = raw;
+        this.mRaw = raw;
         this.parent = parent;
     }
 
     /**
      * 功能描述：实例化一个Type构造器
      * @param raw     要生成的泛型类
-     * @return
      */
     public static TypeBuilder newInstance(Class raw) {
         return new TypeBuilder(raw, null);
@@ -37,7 +36,6 @@ public class TypeBuilder {
      * 功能描述：实例化一个Type构造器
      * @param raw     要生成的泛型类
      * @param parent  父级构造器
-     * @return
      */
     private static TypeBuilder newInstance(Class raw, TypeBuilder parent) {
         return new TypeBuilder(raw, parent);
@@ -46,7 +44,6 @@ public class TypeBuilder {
     /**
      * 功能描述：添加一个参数化泛型
      * @param clazz   指定类类型
-     * @return 
      */
     public TypeBuilder addTypeParam(Class clazz) {
         return addTypeParam((Type) clazz);
@@ -55,7 +52,6 @@ public class TypeBuilder {
     /**
      * 功能描述：添加一个参数化类型
      * @param type    指定Type
-     * @return
      */
     public TypeBuilder addTypeParam(Type type) {
         if (type == null) {
@@ -68,7 +64,6 @@ public class TypeBuilder {
     /**
      * 功能描述：添加下限泛型通配符
      * @param classes 下限通配符
-     * @return 
      */
     public TypeBuilder addTypeParamSuper(Class... classes) {
         if (classes == null) {
@@ -82,7 +77,6 @@ public class TypeBuilder {
     /**
      * 功能描述：添加上限泛型通配符
      * @param classes 上限通配符
-     * @return
      */
     public TypeBuilder addTypeParamExtends(Class... classes) {
 
@@ -98,7 +92,6 @@ public class TypeBuilder {
     /**
      * 功能描述：结束一个子级泛型类
      * @param raw     要生成的泛型类
-     * @return
      */
     public TypeBuilder beginSubType(Class raw) {
         return newInstance(raw, this);
@@ -106,7 +99,6 @@ public class TypeBuilder {
 
     /**
      * 功能描述：开始一个子级泛型类
-     * @return
      */
     public TypeBuilder endSubType() {
         if (parent == null) {
@@ -114,9 +106,9 @@ public class TypeBuilder {
         }
 
         if (args.isEmpty()) {
-            parent.addTypeParam(raw);
+            parent.addTypeParam(mRaw);
         }
-        parent.addTypeParam(new ParamTypeImpl(raw, args.toArray(new Type[args.size()]), null));
+        parent.addTypeParam(new ParamTypeImpl(mRaw, args.toArray(new Type[args.size()]), null));
 
         return parent;
     }
@@ -128,12 +120,9 @@ public class TypeBuilder {
         }
 
         if (args.isEmpty()) {
-            return raw;
+            return mRaw;
         }
-        return new ParamTypeImpl(raw, args.toArray(new Type[args.size()]), null);
+        return new ParamTypeImpl(mRaw, args.toArray(new Type[args.size()]), null);
     }
-
-
-
 
 }
